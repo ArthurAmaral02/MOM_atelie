@@ -1,83 +1,55 @@
+"use client";
+
 import { FilterButton } from "../components/FilterButton";
 import { Header } from "../components/Header";
 import { ProductCard } from "../components/ProductCard";
-
-const produtos = [
-  {
-    id: 1,
-    nome: "Bolsa Aurora",
-    preco: "R$ 189,90",
-    imagem: "/images/bolsa.jpg",
-  },
-  {
-    id: 2,
-    nome: "Necessaire Floral",
-    preco: "R$ 79,90",
-    imagem: "/images/necessaire.jpg",
-  },
-  {
-    id: 3,
-    nome: "Mochila Serena",
-    preco: "R$ 249,90",
-    imagem: "/images/mochila.jpg",
-  },
-  {
-    id: 4,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 5,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 6,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 7,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 8,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 9,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 10,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-  {
-    id: 11,
-    nome: "Porta Acessórios",
-    preco: "R$ 59,90",
-    imagem: "/images/acessorio.jpg",
-  },
-];
+import { useEffect, useState } from "react";
 
 export default function Produtos() {
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState("Todos");
+  const [ordenacao, setOrdenacao] = useState("recentes");
+  const [produtos, setProdutos] = useState([]);
+  useEffect(() => {
+    async function carregarProdutos() {
+      try {
+        const response = await fetch("/api/produtos");
+        const data = await response.json();
+
+        setProdutos(data);
+      } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+      }
+    }
+
+    carregarProdutos();
+  }, []);
+
+  const produtosFiltrados = Array.isArray(produtos)
+    ? produtos
+        .filter((produto) => {
+          if (categoriaSelecionada === "Todos") {
+            return true;
+          }
+
+          return produto.categoria === categoriaSelecionada;
+        })
+        .sort((a, b) => {
+          if (ordenacao === "menor-preco") {
+            return a.preco - b.preco;
+          }
+
+          if (ordenacao === "maior-preco") {
+            return b.preco - a.preco;
+          }
+
+          return 0;
+        })
+    : [];
   return (
     <div className="bg-[#efede1] min-h-screen font-poppins">
       <Header />
 
       <main className="pt-[140px] px-6 pb-20">
-        
         <section className="text-center mb-20">
           <h1
             className="
@@ -103,8 +75,8 @@ export default function Produtos() {
               font-light
             "
           >
-            Peças feitas à mão com delicadeza, exclusividade
-            e afeto para transformar o cotidiano em algo único.
+            Peças feitas à mão com delicadeza, exclusividade e afeto para
+            transformar o cotidiano em algo único.
           </p>
         </section>
 
@@ -120,13 +92,36 @@ export default function Produtos() {
             mx-auto
           "
         >
-        <div className="flex gap-3 flex-wrap">
-            <FilterButton active>Todos</FilterButton>
-            <FilterButton>Bolsas</FilterButton>
-            <FilterButton>Mochilas</FilterButton>
-            <FilterButton>Porta Acessórios</FilterButton>
-        </div>
-          
+          <div className="flex gap-3 flex-wrap">
+            <FilterButton
+              active={categoriaSelecionada === "Todos"}
+              onClick={() => setCategoriaSelecionada("Todos")}
+            >
+              Todos
+            </FilterButton>
+
+            <FilterButton
+              active={categoriaSelecionada === "Bolsas"}
+              onClick={() => setCategoriaSelecionada("Bolsas")}
+            >
+              Bolsas
+            </FilterButton>
+
+            <FilterButton
+              active={categoriaSelecionada === "Mochilas"}
+              onClick={() => setCategoriaSelecionada("Mochilas")}
+            >
+              Mochilas
+            </FilterButton>
+
+            <FilterButton
+              active={categoriaSelecionada === "Porta Acessórios"}
+              onClick={() => setCategoriaSelecionada("Porta Acessórios")}
+            >
+              Porta Acessórios
+            </FilterButton>
+          </div>
+
           <select
             className="
               bg-transparent
@@ -147,7 +142,6 @@ export default function Produtos() {
           </select>
         </section>
 
-        
         <section
           className="
             max-w-[1300px]
@@ -160,7 +154,7 @@ export default function Produtos() {
             gap-y-16
           "
         >
-          {produtos.map((produto) => (
+          {produtosFiltrados.map((produto) => (
             <ProductCard key={produto.id} produto={produto} />
           ))}
         </section>

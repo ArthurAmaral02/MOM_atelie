@@ -1,22 +1,19 @@
 import Link from "next/link";
 
-export function ProductCard({ produto }){   
-    return (
-        <div
-        key={produto.id}
-        className="group"
-        >   
-            <div
-            className="
+export function ProductCard({ produto }) {
+  return (
+    <div key={produto.id} className="group">
+      <div
+        className="
                 overflow-hidden
                 mb-5
                 bg-[#e5e1d3]
                 "
-            >
-                <img
-                src={produto.imagem}
-                alt={produto.nome}
-                className="
+      >
+        <img
+          src={produto.imagem}
+          alt={produto.nome}
+          className="
                     w-full
                     h-[420px]
                     object-cover
@@ -24,35 +21,38 @@ export function ProductCard({ produto }){
                     duration-500
                     group-hover:scale-[1.03]
                 "
-                />
-            </div>
+        />
+      </div>
 
-            <div className="text-center">
-                <h2
-                className="
+      <div className="text-center">
+        <h2
+          className="
                     text-[0.85rem]
                     uppercase
                     tracking-[2px]
                     text-[#213131]
                     mb-2
                 "
-                >
-                    {produto.nome}
-                </h2>
+        >
+          {produto.nome}
+        </h2>
 
-                <p
-                className="
+        <p
+          className="
                     text-[#d6988e]
                     text-[0.85rem]
                     mb-5
                 "
-                >
-                {produto.preco}
-                </p>
+        >
+          {produto.preco.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          })}
+        </p>
 
-                <Link
-                href="/produtos"
-                className="
+        <Link
+          href={`/produtos/${produto.id}`}
+          className="
                     uppercase
                     tracking-[2px]
                     text-[0.7rem]
@@ -65,10 +65,10 @@ export function ProductCard({ produto }){
                     hover:text-[#efede1]
                     transition-all
                 "
-                >
-                Ver produto
-                </Link>
-            </div>
-        </div>
-    )
+        >
+          Ver produto
+        </Link>
+      </div>
+    </div>
+  );
 }
