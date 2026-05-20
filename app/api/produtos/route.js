@@ -1,4 +1,4 @@
-import Parse from "@/lib/parse";
+import Parse from "@/lib/parseServer";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -15,7 +15,7 @@ export async function GET() {
       descricao: p.get("descricao"),
       imagem: p.get("imagem")?.url(),
       categoria: p.get("categoria"),
-      createdAT: p.createdAt,
+      createdAt: p.createdAt,
     }));
 
     return NextResponse.json(produtosLimpos);
